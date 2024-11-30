@@ -1,0 +1,129 @@
+local DrRayLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/AZYsGithub/DrRay-UI-Library/main/DrRay.lua"))()
+local window = DrRayLibrary:Load("Dandy's World 0.20", "Default")
+local tab = DrRayLibrary.newTab("🌐 • Update Logs", "🌐")
+tab.newButton("Added:", " ", function()
+    print('Hello!')
+end)
+tab.newButton("🏡 • Main", " ", function()
+    print('Hello!')
+end)
+tab.newButton("🔋 • Boosts", " ", function()
+    print('Hello!')
+end)
+tab.newButton("🏃‍♂️‍➡️ • Speed hack", " ", function()
+    print('Hello!')
+end)
+tab.newButton("🤝 • Anothers Scripts", " ", function()
+    print('Hello!')
+end)
+tab.newButton("🍓 • Heal Yourself", " ", function()
+    print('Hello!')
+end)
+tab.newButton("⚙️ • Settings", " ", function()
+    print('Hello!')
+end)
+tab.newButton("🕺• Animations", "at work !!⚠️", function()
+    print('Hello!')
+end)
+tab.newButton("📒 • Version 0.20", "Second Version!!", function()
+    print('Hello!')
+end)
+local tab = DrRayLibrary.newTab("🏡 • Main", "93864427891981")
+tab.newButton("🔋 • Boost Yourself", "Needs Shelly", function()
+local args = {
+    [1] = game:GetService("Players").LocalPlayer.Character,
+    [2] = CFrame.new(-179.29843139648438, 146.2311248779297, -164.61495971679688) * CFrame.Angles(3.1415927410125732, 0.4017193913459778, -3.141592502593994),
+    [3] = game:GetService("Players").LocalPlayer.Character
+}
+
+game:GetService("ReplicatedStorage").Events.AbilityEvent:InvokeServer(unpack(args))
+    print('Hello!')
+end)
+tab.newButton("🍓 • Heal Yourself", "Needs Sprout", function()
+local args = {
+    [1] = game:GetService("Players").LocalPlayer.Character,
+    [2] = CFrame.new(-179.29843139648438, 146.2311248779297, -164.61495971679688) * CFrame.Angles(3.1415927410125732, 0.4017193913459778, -3.141592502593994),
+    [3] = game:GetService("Players").LocalPlayer.Character
+}
+
+game:GetService("ReplicatedStorage").Events.AbilityEvent:InvokeServer(unpack(args))
+    print('Hello!')
+end)
+tab.newButton("🏃‍♂️‍➡️ • Speed hack", "Use:]", function()
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+
+while true do
+    character.Humanoid.WalkSpeed = 30
+    wait(0)
+end
+    print('Hello!')
+end)
+tab.newButton("🚶‍♂️‍➡️ • Normal Speed", "Puts u Normal Speed", function()
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+
+local normalWalkSpeed = 16
+
+character.Humanoid.WalkSpeed = 30
+wait(5)
+character.Humanoid.WalkSpeed = normalWalkSpeed
+    print('Hello!')
+end)
+local tab = DrRayLibrary.newTab("🤝 • Another Scripts", "ImageIdHere")
+tab.newButton("ThebinModMenu", "By RodeStriker", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/RodeStriker/TheDandyBinModMenu/refs/heads/main/Testing", true))()
+    print('Hello!')
+end)
+tab.newButton("Glisten's animation closet", "By RodeStriker", function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/RodeStriker/TheDandyHelper/refs/heads/main/GAC"))()
+    print('Hello!')
+end)
+tab.newButton("Admin Panel 0.4", "Iriskaaaaa by Otvajni", function()
+loadstring(game:HttpGet("https://pastebin.com/raw/VA4t52Ae"))()
+    print('Hello!')
+end)
+local tab = DrRayLibrary.newTab("🕺 • Animations", "ImageIdHere")
+tab.newButton("We are doing it, be patient ⚠️", "Prints Hello!", function()
+    print('Hello!')
+end)
+local tab = DrRayLibrary.newTab("⚙️ • Settings", "ImageIdHere")
+tab.newButton("Rejoin", "Rejoin the game", function()
+local TeleportService = game:GetService("TeleportService")
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+local function teleportToSameServer()
+    local placeId = game.PlaceId
+    local jobId = game.JobId
+    
+    wait(1)
+    
+    TeleportService:TeleportToPlaceInstance(placeId, jobId, player)
+end
+
+teleportToSameServer()
+    print('Hello!')
+end)
+tab.newSlider("Slider", "Epic slider", 150, false, function(num)
+local camera = game.Workspace.CurrentCamera
+local normalFOV = camera.FieldOfView
+local targetFOV = normalFOV
+local duration = 1
+local startTime = tick()
+
+local slider = game.Players.LocalPlayer.PlayerGui:WaitForChild("Slider")
+
+slider.Changed:Connect(function()
+    targetFOV = slider.Value
+    startTime = tick()
+end)
+
+while true do
+    local elapsedTime = tick() - startTime
+    local newFOV = normalFOV + (targetFOV - normalFOV) * (elapsedTime / duration)
+    camera.FieldOfView = newFOV
+    wait(0.03)
+end
+    print('Hello!')
+end)
