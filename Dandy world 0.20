@@ -1,129 +1,406 @@
-local DrRayLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/AZYsGithub/DrRay-UI-Library/main/DrRay.lua"))()
-local window = DrRayLibrary:Load("Dandy's World 0.20", "Default")
-local tab = DrRayLibrary.newTab("🌐 • Update Logs", "🌐")
-tab.newButton("Added:", " ", function()
-    print('Hello!')
-end)
-tab.newButton("🏡 • Main", " ", function()
-    print('Hello!')
-end)
-tab.newButton("🔋 • Boosts", " ", function()
-    print('Hello!')
-end)
-tab.newButton("🏃‍♂️‍➡️ • Speed hack", " ", function()
-    print('Hello!')
-end)
-tab.newButton("🤝 • Anothers Scripts", " ", function()
-    print('Hello!')
-end)
-tab.newButton("🍓 • Heal Yourself", " ", function()
-    print('Hello!')
-end)
-tab.newButton("⚙️ • Settings", " ", function()
-    print('Hello!')
-end)
-tab.newButton("🕺• Animations", "at work !!⚠️", function()
-    print('Hello!')
-end)
-tab.newButton("📒 • Version 0.20", "Second Version!!", function()
-    print('Hello!')
-end)
-local tab = DrRayLibrary.newTab("🏡 • Main", "93864427891981")
-tab.newButton("🔋 • Boost Yourself", "Needs Shelly", function()
-local args = {
-    [1] = game:GetService("Players").LocalPlayer.Character,
-    [2] = CFrame.new(-179.29843139648438, 146.2311248779297, -164.61495971679688) * CFrame.Angles(3.1415927410125732, 0.4017193913459778, -3.141592502593994),
-    [3] = game:GetService("Players").LocalPlayer.Character
-}
+local WindUI = loadstring(game:HttpGet("https://tree-hub.vercel.app/api/UI/WindUI"))()
+local Window = WindUI:CreateWindow({
+    Title = "🌐Dandy's world", -- Título da UI
+    Icon = "https://images.app.goo.gl/Hk4hi9bLkzMeHhis9", -- URL do ícone
+    Author = "WindUi", -- Autor & Criador
+    Folder = "CloudHub", -- Nome da pasta para salvar dados
+    Size = UDim2.fromOffset(580, 460), -- Tamanho da UI
+    KeySystem = { -- Sistema de chave
+        Key = "TheBinAndKotologFans", -- chave
+        Note = "The Key are TheBinAndKotologFans", -- Nota
+        URL = "https://github.com/Footagesus/WindUI", -- URL para obter a chave
+        SaveKey = true, -- Salva a chave
+    },
+    Transparent = true, -- Transparência da UI
+    Theme = "Dark", -- Tema da UI
+    SideBarWidth = 170, -- Largura da barra lateral
+    HasOutline = true, -- Adiciona contorno à janela
+})
 
-game:GetService("ReplicatedStorage").Events.AbilityEvent:InvokeServer(unpack(args))
-    print('Hello!')
-end)
-tab.newButton("🍓 • Heal Yourself", "Needs Sprout", function()
-local args = {
-    [1] = game:GetService("Players").LocalPlayer.Character,
-    [2] = CFrame.new(-179.29843139648438, 146.2311248779297, -164.61495971679688) * CFrame.Angles(3.1415927410125732, 0.4017193913459778, -3.141592502593994),
-    [3] = game:GetService("Players").LocalPlayer.Character
-}
+local Notification = WindUI:Notify({
+    Title = "Oh Welcome To The Hub!!",
+    Content = "Criado por Braziliam",
+    Duration = 8,
+})
 
-game:GetService("ReplicatedStorage").Events.AbilityEvent:InvokeServer(unpack(args))
-    print('Hello!')
-end)
-tab.newButton("🏃‍♂️‍➡️ • Speed hack", "Use:]", function()
-local player = game.Players.LocalPlayer
-local character = player.Character or player.CharacterAdded:Wait()
+local Tab = Window:Tab({
+    Title = "Main",
+    Icon = "house", -- ícone
+})
 
-while true do
-    character.Humanoid.WalkSpeed = 30
-    wait(0)
+-- Variáveis globais que estavam faltando
+local isEnabled = false -- Inicializa o estado do Toggle
+local updateConnection -- Conexão de Heartbeat (atualização contínua)
+local selectedFont = Enum.Font.SourceSans -- Define a fonte padrão
+
+local Toggle = Tab:Toggle({
+    Title = "Toggle",
+    Desc = "Ativar/Desativar Destaques e NomeTags",
+    Value = isEnabled, -- Usa a variável isEnabled para definir o estado inicial
+    Callback = function(state)
+        isEnabled = state -- Atualiza o estado de isEnabled
+
+        local function updateMonsters()
+            local currentRoom = workspace:FindFirstChild("CurrentRoom")
+            if currentRoom then
+                for _, item in pairs(currentRoom:GetChildren()) do
+                    if item:IsA("Model") then
+                        local monstersFolder = item:FindFirstChild("Monsters")
+                        if monstersFolder then
+                            for _, monster in pairs(monstersFolder:GetChildren()) do
+                                if monster:IsA("Model") then
+                                    if isEnabled then
+                                        -- Adiciona ou atualiza o Highlight
+                                        local highlight = monster:FindFirstChildOfClass("Highlight")
+                                        if not highlight then
+                                            highlight = Instance.new("Highlight")
+                                            highlight.Parent = monster
+                                        end
+                                        highlight.FillColor = Color3.fromRGB(255, 0, 0) -- Defina a cor do Highlight
+                                        highlight.OutlineColor = Color3.fromRGB(255, 255, 255) -- Defina a cor do contorno
+                                        highlight.FillTransparency = 0.5
+
+                                        -- Adiciona ou atualiza o NameTag
+                                        local nameTag = monster:FindFirstChild("NameTag")
+                                        if not nameTag then
+                                            local billboardGui = Instance.new("BillboardGui")
+                                            billboardGui.Name = "NameTag"
+                                            billboardGui.Parent = monster
+                                            billboardGui.Size = UDim2.new(8, 0, 2, 0)
+                                            billboardGui.AlwaysOnTop = true
+                                            billboardGui.MaxDistance = 2000
+
+                                            local textLabel = Instance.new("TextLabel")
+                                            textLabel.Parent = billboardGui
+                                            textLabel.Size = UDim2.new(1, 0, 1, 0)
+                                            textLabel.BackgroundTransparency = 1
+                                            textLabel.Text = monster.Name
+                                            textLabel.TextColor3 = Color3.new(255, 0, 0)
+                                            textLabel.Font = selectedFont
+                                        else
+                                            -- Atualiza a fonte do NameTag
+                                            local textLabel = nameTag:FindFirstChildOfClass("TextLabel")
+                                            if textLabel then
+                                                textLabel.Font = selectedFont
+                                            end
+                                        end
+                                    else
+                                        -- Remove Highlight e NameTag se o Toggle estiver desativado
+                                        local highlight = monster:FindFirstChildOfClass("Highlight")
+                                        if highlight then
+                                            highlight:Destroy()
+                                        end
+                                        local nameTag = monster:FindFirstChild("NameTag")
+                                        if nameTag then
+                                            nameTag:Destroy()
+                                        end
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+
+        -- Desconecta o ciclo anterior, se existir
+        if updateConnection then
+            updateConnection:Disconnect()
+        end
+
+        -- Inicia o ciclo de atualização se o Toggle estiver ativado
+        if isEnabled then
+            updateConnection = game:GetService("RunService").Heartbeat:Connect(function()
+                updateMonsters()
+            end)
+        else
+            -- Limpa os elementos se o Toggle estiver desativado
+            updateMonsters()
+        end
+        print("Toggle state:", state) -- Exibe o estado no console
+    end,
+})
+
+local Notification2 = WindUI:Notify({
+    Title = "Join My Discord",
+    Content = "https://discord.gg/H7E8q5s5",
+    Duration = 15,
+})
+-- Variáveis para Esp Generators
+local espGeneratorsEnabled = false
+local showCurrentAmountEnabled = false
+local generatorUpdateConnection = nil
+
+local Toggle = Tab:Toggle({
+    Title = "Toggle",
+    Desc = "Toggle Desc",
+    Value = true,
+    Callback = function(state)
+-- Carregar a biblioteca WindUI
+local WindUI = loadstring(game:HttpGet("https://tree-hub.vercel.app/api/UI/WindUI"))()
+local Window = WindUI:CreateWindow({
+    Title = "🌐Dandy's world", -- Título da UI
+    Icon = "https://images.app.goo.gl/Hk4hi9bLkzMeHhis9", -- URL do ícone
+    Author = "WindUi", -- Autor & Criador
+    Folder = "CloudHub", -- Nome da pasta para salvar dados
+    Size = UDim2.fromOffset(580, 460), -- Tamanho da UI
+    KeySystem = { -- Sistema de chave
+        Key = "TheBinAndKotologFans", -- chave
+        Note = "The Key are TheBinAndKotologFans", -- Nota
+        URL = "https://github.com/Footagesus/WindUI", -- URL para obter a chave
+        SaveKey = true, -- Salva a chave
+    },
+    Transparent = true, -- Transparência da UI
+    Theme = "Dark", -- Tema da UI
+    SideBarWidth = 170, -- Largura da barra lateral
+    HasOutline = true, -- Adiciona contorno à janela
+})
+
+local Notification = WindUI:Notify({
+    Title = "Oh Welcome To The Hub!!",
+    Content = "Criado por Braziliam",
+    Duration = 8,
+})
+
+local Tab = Window:Tab({
+    Title = "Main",
+    Icon = "house", -- ícone
+})
+
+-- Variáveis globais que estavam faltando
+local isEnabled = false -- Inicializa o estado do Toggle
+local updateConnection -- Conexão de Heartbeat (atualização contínua)
+local selectedFont = Enum.Font.SourceSans -- Define a fonte padrão
+
+-- Toggle para ativar/desativar a visualização de monstros
+local Toggle = Tab:Toggle({
+    Title = "Toggle Monstros",
+    Desc = "Ativar/Desativar Destaques e NomeTags dos Monstros",
+    Value = isEnabled, -- Usa a variável isEnabled para definir o estado inicial
+    Callback = function(state)
+        isEnabled = state -- Atualiza o estado de isEnabled
+
+        -- Função para atualizar monstros
+        local function updateMonsters()
+            local currentRoom = workspace:FindFirstChild("CurrentRoom")
+            if currentRoom then
+                for _, item in pairs(currentRoom:GetChildren()) do
+                    if item:IsA("Model") then
+                        local monstersFolder = item:FindFirstChild("Monsters")
+                        if monstersFolder then
+                            for _, monster in pairs(monstersFolder:GetChildren()) do
+                                if monster:IsA("Model") then
+                                    if isEnabled then
+                                        -- Adiciona ou atualiza o Highlight
+                                        local highlight = monster:FindFirstChildOfClass("Highlight")
+                                        if not highlight then
+                                            highlight = Instance.new("Highlight")
+                                            highlight.Parent = monster
+                                        end
+                                        highlight.FillColor = Color3.fromRGB(255, 0, 0) -- Defina a cor do Highlight
+                                        highlight.OutlineColor = Color3.fromRGB(255, 255, 255) -- Defina a cor do contorno
+                                        highlight.FillTransparency = 0.5
+
+                                        -- Adiciona ou atualiza o NameTag
+                                        local nameTag = monster:FindFirstChild("NameTag")
+                                        if not nameTag then
+                                            local billboardGui = Instance.new("BillboardGui")
+                                            billboardGui.Name = "NameTag"
+                                            billboardGui.Parent = monster
+                                            billboardGui.Size = UDim2.new(8, 0, 2, 0)
+                                            billboardGui.AlwaysOnTop = true
+                                            billboardGui.MaxDistance = 2000
+
+                                            local textLabel = Instance.new("TextLabel")
+                                            textLabel.Parent = billboardGui
+                                            textLabel.Size = UDim2.new(1, 0, 1, 0)
+                                            textLabel.BackgroundTransparency = 1
+                                            textLabel.Text = monster.Name
+                                            textLabel.TextColor3 = Color3.new(255, 0, 0)
+                                            textLabel.Font = selectedFont
+                                        else
+                                            -- Atualiza a fonte do NameTag
+                                            local textLabel = nameTag:FindFirstChildOfClass("TextLabel")
+                                            if textLabel then
+                                                textLabel.Font = selectedFont
+                                            end
+                                        end
+                                    else
+                                        -- Remove Highlight e NameTag se o Toggle estiver desativado
+                                        local highlight = monster:FindFirstChildOfClass("Highlight")
+                                        if highlight then
+                                            highlight:Destroy()
+                                        end
+                                        local nameTag = monster:FindFirstChild("NameTag")
+                                        if nameTag then
+                                            nameTag:Destroy()
+                                        end
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+
+        -- Desconecta o ciclo anterior, se existir
+        if updateConnection then
+            updateConnection:Disconnect()
+        end
+
+        -- Inicia o ciclo de atualização se o Toggle estiver ativado
+        if isEnabled then
+            updateConnection = game:GetService("RunService").Heartbeat:Connect(function()
+                updateMonsters()
+            end)
+        else
+            -- Limpa os elementos se o Toggle estiver desativado
+            updateMonsters()
+        end
+        print("Toggle state:", state) -- Exibe o estado no console
+    end,
+})
+
+local Notification2 = WindUI:Notify({
+    Title = "Join My Discord",
+    Content = "https://discord.gg/H7E8q5s5",
+    Duration = 15,
+})
+
+-- Variáveis para Esp Generators
+local espGeneratorsEnabled = false
+local showCurrentAmountEnabled = false
+local generatorUpdateConnection = nil
+local Toggle = Tab:Toggle({
+    Title = "Toggle",
+    Desc = "Toggle Desc",
+    Value = true,
+    Callback = function(state)
+-- Função para atualizar os geradores
+local function updateGenerators()
+    if generatorUpdateConnection then
+        generatorUpdateConnection:Disconnect()
+    end
+
+    generatorUpdateConnection = game:GetService("RunService").Heartbeat:Connect(function()
+        local currentRoom = workspace:FindFirstChild("CurrentRoom")
+        if currentRoom then
+            for _, item in pairs(currentRoom:GetChildren()) do
+                if item:IsA("Model") then
+                    local generatorsFolder = item:FindFirstChild("Generators")
+                    if generatorsFolder then
+                        for _, generator in pairs(generatorsFolder:GetChildren()) do
+                            if generator:IsA("Model") then
+                                local statsFolder = generator:FindFirstChild("Stats")
+                                local completed = statsFolder and statsFolder:FindFirstChild("Completed")
+
+                                if completed and completed:IsA("BoolValue") and completed.Value then
+                                    removeBaseVisuals(generator)
+                                    removeCurrentAmountVisual(generator)
+                                else
+                                    -- Controlar os elementos visuais básicos
+                                    if espGeneratorsEnabled then
+                                        addBaseVisuals(generator)
+                                    else
+                                        removeBaseVisuals(generator)
+                                    end
+
+                                    -- Controlar a visualização de CurrentAmount
+                                    if showCurrentAmountEnabled then
+                                        addCurrentAmountVisual(generator)
+                                    else
+                                        removeCurrentAmountVisual(generator)
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end)
 end
-    print('Hello!')
-end)
-tab.newButton("🚶‍♂️‍➡️ • Normal Speed", "Puts u Normal Speed", function()
-local player = game.Players.LocalPlayer
-local character = player.Character or player.CharacterAdded:Wait()
 
-local normalWalkSpeed = 16
+-- Função para adicionar elementos visuais básicos ao gerador
+local function addBaseVisuals(generator)
+    if not generator:FindFirstChildOfClass("Highlight") then
+        local highlight = Instance.new("Highlight")
+        highlight.Parent = generator
+        highlight.FillColor = Color3.new(1, 1, 1)  -- Branco
+        highlight.OutlineColor = Color3.new(1, 1, 1)  -- Branco
+        highlight.FillTransparency = 0.5
+    end
 
-character.Humanoid.WalkSpeed = 30
-wait(5)
-character.Humanoid.WalkSpeed = normalWalkSpeed
-    print('Hello!')
-end)
-local tab = DrRayLibrary.newTab("🤝 • Another Scripts", "ImageIdHere")
-tab.newButton("ThebinModMenu", "By RodeStriker", function()
-loadstring(game:HttpGet("https://raw.githubusercontent.com/RodeStriker/TheDandyBinModMenu/refs/heads/main/Testing", true))()
-    print('Hello!')
-end)
-tab.newButton("Glisten's animation closet", "By RodeStriker", function()
-loadstring(game:HttpGet("https://raw.githubusercontent.com/RodeStriker/TheDandyHelper/refs/heads/main/GAC"))()
-    print('Hello!')
-end)
-tab.newButton("Admin Panel 0.4", "Iriskaaaaa by Otvajni", function()
-loadstring(game:HttpGet("https://pastebin.com/raw/VA4t52Ae"))()
-    print('Hello!')
-end)
-local tab = DrRayLibrary.newTab("🕺 • Animations", "ImageIdHere")
-tab.newButton("We are doing it, be patient ⚠️", "Prints Hello!", function()
-    print('Hello!')
-end)
-local tab = DrRayLibrary.newTab("⚙️ • Settings", "ImageIdHere")
-tab.newButton("Rejoin", "Rejoin the game", function()
-local TeleportService = game:GetService("TeleportService")
-local Players = game:GetService("Players")
-local player = Players.LocalPlayer
+    if not generator:FindFirstChild("NameTag") then
+        local billboardGui = Instance.new("BillboardGui")
+        billboardGui.Name = "NameTag"
+        billboardGui.Parent = generator
+        billboardGui.Size = UDim2.new(8, 0, 2, 0)
+        billboardGui.AlwaysOnTop = true
+        billboardGui.MaxDistance = 2000
 
-local function teleportToSameServer()
-    local placeId = game.PlaceId
-    local jobId = game.JobId
-    
-    wait(1)
-    
-    TeleportService:TeleportToPlaceInstance(placeId, jobId, player)
+        local textLabel = Instance.new("TextLabel")
+        textLabel.Parent = billboardGui
+        textLabel.Size = UDim2.new(1, 0, 1, 0)
+        textLabel.BackgroundTransparency = 1
+        textLabel.Text = generator.Name
+        textLabel.TextColor3 = Color3.new(1, 1, 1)  -- Branco
+        textLabel.TextScaled = true
+        textLabel.Font = Enum.Font.Arima
+    end
 end
 
-teleportToSameServer()
-    print('Hello!')
-end)
-tab.newSlider("Slider", "Epic slider", 150, false, function(num)
-local camera = game.Workspace.CurrentCamera
-local normalFOV = camera.FieldOfView
-local targetFOV = normalFOV
-local duration = 1
-local startTime = tick()
+-- Função para adicionar a visualização do CurrentAmount
+local function addCurrentAmountVisual(generator)
+    local statsFolder = generator:FindFirstChild("Stats")
+    local currentAmount = statsFolder and statsFolder:FindFirstChild("CurrentAmount")
+    local teleportPositions = generator:FindFirstChild("TeleportPositions")
+    local teleportPart = teleportPositions and teleportPositions:FindFirstChild("TeleportPosition")
 
-local slider = game.Players.LocalPlayer.PlayerGui:WaitForChild("Slider")
+    if currentAmount and teleportPart then
+        if not teleportPart:FindFirstChild("CurrentAmountGui") then
+            local billboardGui = Instance.new("BillboardGui")
+            billboardGui.Name = "CurrentAmountGui"
+            billboardGui.Parent = teleportPart
+            billboardGui.Size = UDim2.new(8, 0, 2, 0)
+            billboardGui.AlwaysOnTop = true
+            billboardGui.MaxDistance = 2000
 
-slider.Changed:Connect(function()
-    targetFOV = slider.Value
-    startTime = tick()
-end)
+            local textLabel = Instance.new("TextLabel")
+            textLabel.Parent = billboardGui
+            textLabel.Size = UDim2.new(1, 0, 1, 0)
+            textLabel.BackgroundTransparency = 1
+            textLabel.TextColor3 = Color3.new(1, 1, 1)  -- Branco
+            textLabel.TextScaled = true
+            textLabel.Font = Enum.Font.Arima
+        end
 
-while true do
-    local elapsedTime = tick() - startTime
-    local newFOV = normalFOV + (targetFOV - normalFOV) * (elapsedTime / duration)
-    camera.FieldOfView = newFOV
-    wait(0.03)
+        local textLabel = teleportPart:FindFirstChild("CurrentAmountGui"):FindFirstChildOfClass("TextLabel")
+        if textLabel then
+            textLabel.Text = "Amount: " .. currentAmount.Value
+        end
+    end
 end
-    print('Hello!')
-end)
+
+-- Função para remover elementos visuais básicos
+local function removeBaseVisuals(generator)
+    local highlight = generator:FindFirstChildOfClass("Highlight")
+    if highlight then highlight:Destroy() end
+
+    local nameTag = generator:FindFirstChild("NameTag")
+    if nameTag then nameTag:Destroy() end
+end
+
+-- Função para remover a visualização de CurrentAmount
+local function removeCurrentAmountVisual(generator)
+    local teleportPositions = generator:FindFirstChild("TeleportPositions")
+    local teleportPart = teleportPositions and teleportPositions:FindFirstChild("TeleportPosition")
+    if teleportPart then
+        local currentAmountGui = teleportPart:FindFirstChild("CurrentAmountGui")
+        if currentAmountGui then currentAmountGui:Destroy() end
+    end
+end
+        print(state)
+    end,
+})
